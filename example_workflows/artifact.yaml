@@ -1,0 +1,37 @@
+# Save the script's output as a downloadable file.
+name: Downloadable report
+
+on:
+  push:
+    branches: ["**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up uv and Python
+        uses: astral-sh/setup-uv@v9
+        with:
+          python-version: "3.12"
+
+      - name: Install project and dependencies
+        run: uv sync --locked
+
+      - name: Write output to a text file
+        # > writes stdout to a file instead of displaying it in the log.
+        run: uv run --locked python src/examples/helloworld.py > hello-world.txt
+
+      - name: Upload the report
+        uses: actions/upload-artifact@v7
+        with:
+          name: hello-world-report
+          path: hello-world.txt
+          if-no-files-found: error
+          retention-days: 7
