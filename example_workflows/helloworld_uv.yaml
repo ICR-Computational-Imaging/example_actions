@@ -1,0 +1,35 @@
+# Use uv to install Python, the project, and its dependencies, then run a script.
+
+name: Hello World with uv!
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main, dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run-hello-world:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up uv and Python
+        uses: astral-sh/setup-uv@v9
+        with:
+          python-version: "3.12"
+
+      - name: Install project and dependencies
+        # Creates .venv and installs dependencies from pyproject.toml using uv.lock.
+        # --locked fails if uv.lock needs updating, keeping CI installs reproducible.
+        run: uv sync --locked
+
+      - name: Run file
+        # Runs Python inside the environment created by uv sync.
+        run: uv run --locked python src/examples/helloworld.py
