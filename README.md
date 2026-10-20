@@ -45,6 +45,13 @@ This table will grow as new examples are added. Filenames below refer to files i
 | `helloworld.yaml` | Checks out the repository, sets up Python 3.12, and runs Python using an inline command, multiple shell commands, and a script file. Runs on branch pushes, pull requests targeting `main` or `dev`, or a manual trigger. |
 | `helloworld_uv.yaml` | Uses uv to set up Python 3.12, install the project and its dependencies with `uv sync --locked`, and run the example script with `uv run`. Uses the same triggers as `helloworld.yaml`. |
 | `test.yaml` | Installs the project and pytest with uv, then tests the hello-world output and time formatting. A failing test makes the workflow fail. Uses the same triggers as `helloworld.yaml`. |
+| `lint.yaml` | Uses Ruff to check Python files for common mistakes, such as unused imports. Runs on branch pushes, PRs targeting `main` or `dev`, or manually. |
+| `matrix.yaml` | Runs the unit tests in separate jobs for Python 3.12 and 3.13. Runs on branch pushes, PRs targeting `main` or `dev`, or manually. |
+| `artifact.yaml` | Saves the hello-world output to a text report and uploads it for download. Runs on branch pushes or manually. |
+| `inputs.yaml` | Adds a greeting field and a repetition dropdown to the manual **Run workflow** form. |
+| `dependent_jobs.yaml` | Uses `needs` to run a report job only after the unit tests pass. Runs on branch pushes, PRs targeting `main` or `dev`, or manually. |
+| `conditions.yaml` | Uses `if` to select steps based on the branch or trigger event. Runs on branch pushes, PRs targeting `main` or `dev`, or manually. |
+| `schedule.yaml` | Runs hello world daily at 09:17 UTC, or manually. The schedule requires the workflow on the default branch. |
 | `secret.yaml` | Manual teaching example that prints a dummy secret to demonstrate GitHub's log masking. **Use a dummy value only; real secrets must never be printed or shared.** See setup below. |
 
 The uv example installs the dependencies declared in `pyproject.toml` at the versions recorded in `uv.lock`. After changing dependencies, run `uv lock` locally and commit both files before running the workflow.
@@ -58,9 +65,23 @@ uv sync --locked --group dev
 uv run --locked --group dev python -m pytest -v
 ```
 
-The tests in `tests/test_helloworld.py` check time formatting and the ten numbered output lines using simple assertions. Pytest's `capsys` fixture collects the printed output so it can be checked. The tests run the real script, including its pauses, so they take about five seconds. Pytest is declared in the `dev` dependency group in `pyproject.toml`.
+The tests in `tests/test_helloworld.py` check time formatting and the ten numbered output lines using simple assertions. Pytest's `capsys` fixture collects the printed output so it can be checked. The tests run the real script, including its pauses. Pytest and Ruff are declared in the `dev` dependency group in `pyproject.toml`.
 
-The same commands run in `.github/workflows/test.yaml`, which is enabled in this repository. The template is also available as `example_workflows/test.yaml` for the lecture exercises. Commit and push the tests, workflow, `pyproject.toml`, and updated `uv.lock` together.
+Copy `example_workflows/test.yaml` into `.github/workflows/` to run the same commands on GitHub. Commit and push the tests, workflow, `pyproject.toml`, and updated `uv.lock` together.
+
+## Trying the other examples
+
+Enable each example by copying it into `.github/workflows/` using the steps above.
+
+- **Linting:** Run `uv run --locked --group dev ruff check src tests` locally. For a lecture demonstration, add an unused import to a Python file and see the check fail; remove it to make the check pass again.
+- **Matrix:** Open the workflow run to see a separate test job for each Python version. Edit `strategy.matrix.python-version` to change the versions tested; each version must satisfy the project's Python requirement.
+- **Artifacts:** Open a completed **Downloadable report** run and download `hello-world-report` from its **Artifacts** section. It contains `hello-world.txt` and is retained for seven days.
+- **Inputs:** Open **Manual inputs → Run workflow**, enter a greeting, and choose how many times to print it.
+- **Dependent jobs:** The report job waits for the test job. If a test fails, the report job is skipped. When tests pass, the run's summary page shows the success report.
+- **Conditions:** Compare a branch push, a PR, and a manual run to see which steps run or are skipped. The main-branch step checks the branch name `main`; change it if your default branch has another name.
+- **Schedule:** The daily trigger uses UTC (09:17 UTC is 09:17 UK winter time or 10:17 UK summer time). GitHub runs scheduled workflows from the default branch and may delay runs. Scheduled workflows are disabled by default in forks; enable the workflow in the Actions tab. In public repositories, schedules are automatically disabled after 60 days without repository activity. You can also try the example manually.
+
+See GitHub's documentation on [workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax), [artifacts](https://github.com/actions/upload-artifact), and [scheduled events](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule).
 
 ## Secrets
 
