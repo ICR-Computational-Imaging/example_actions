@@ -1,0 +1,39 @@
+# This example demonstrates how workflows execute command lines.
+
+name: Hello World!  # This is the name shown within the Actions tab
+
+on:  # When should the action be run?
+  push:
+    branches: ["**"]             # Pushes to any branch; excludes tags
+  pull_request: 
+    branches: [main, dev]        # PRs targeting main or dev only
+  workflow_dispatch:             # Manually run against a selected branch or tag
+
+permissions:
+  contents: read  # The workflow can only read the repository, not write to it
+
+# Each workflow has a number of jobs (run concurrently)
+jobs:
+  run-hello-world:  # The user-chose job ID
+    name: Run hello world   # This name will be seen on the Actions tab.
+    runs-on: ubuntu-latest  # Run on the latest ubuntu runner
+
+    steps:  # Steps run sequentially
+      - name: Check out repository
+        uses: actions/checkout@v7    # This is a reusable GH action
+
+      - name: Set up Python
+        uses: actions/setup-python@v6  # This install Python on the runner
+        with:
+          python-version: "3.12"  # Provides options to the installer
+
+      - name: Run inline
+        run: python -c "print('Hello World!')"  # Run simple python via command
+
+      - name: Run multiline
+        run: |                         # "|" permits multiline commands to run
+          python -c "print('Line 1')"
+          python -c "print('Line 2')"
+
+      - name: Run file
+        run: python src/examples/helloworld.py
