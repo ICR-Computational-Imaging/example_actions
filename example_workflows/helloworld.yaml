@@ -6,7 +6,7 @@ on:  # When should the action be run?
   push:
     branches: ["**"]             # Pushes to any branch; excludes tags
   pull_request: 
-    branches: [main, dev]        # PRs targeting main or dev only
+    branches: [main, dev]        # PRs targeting main or dev (if available) only
   workflow_dispatch:             # Manually run against a selected branch or tag
 
 permissions:
