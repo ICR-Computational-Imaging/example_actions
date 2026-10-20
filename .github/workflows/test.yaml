@@ -1,0 +1,33 @@
+# Run the hello-world unit tests. A failing test makes the workflow fail.
+
+name: Python unit tests
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main, dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up uv and Python
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install project and test dependencies
+        # The dev group contains pytest; uv.lock fixes the dependency versions.
+        run: uv sync --locked --group dev
+
+      - name: Run unit tests
+        run: uv run --locked --group dev python -m pytest -v

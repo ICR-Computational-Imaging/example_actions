@@ -1,0 +1,31 @@
+# Check for common Python mistakes, such as unused imports.
+name: Lint Python
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main, dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up uv and Python
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install project and development tools
+        run: uv sync --locked --group dev
+
+      - name: Check Python code with Ruff
+        # Reports problems without editing files. A lint error fails the workflow.
+        run: uv run --locked --group dev ruff check --output-format=github src tests

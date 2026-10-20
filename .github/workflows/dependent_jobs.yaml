@@ -1,0 +1,41 @@
+# Jobs run independently by default. Use needs to make one wait for another.
+name: Dependent jobs
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main, dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up uv and Python
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install project and test dependencies
+        run: uv sync --locked --group dev
+
+      - name: Run unit tests
+        run: uv run --locked --group dev python -m pytest -v
+
+  report:
+    needs: test  # Runs only after the test job succeeds.
+    runs-on: ubuntu-latest
+    steps:
+      - name: Write a success report
+        # Each job gets its own runner; this job does not need the source files.
+        # GitHub displays this Markdown on the workflow run's summary page.
+        run: |
+          echo "## Test report" >> "$GITHUB_STEP_SUMMARY"
+          echo "The hello-world unit tests passed." >> "$GITHUB_STEP_SUMMARY"

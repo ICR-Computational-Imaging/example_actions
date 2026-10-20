@@ -1,0 +1,29 @@
+# Scheduled workflows run from the default branch; GitHub may delay them.
+name: Scheduled hello world
+
+on:
+  schedule:
+    # minute hour day-of-month month day-of-week (UTC)
+    - cron: "17 9 * * *"  # Every day at 09:17 UTC.
+  workflow_dispatch:       # Also allows a manual run for the lecture.
+
+permissions:
+  contents: read
+
+jobs:
+  hello-world:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up uv and Python
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install project and dependencies
+        run: uv sync --locked
+
+      - name: Run the daily task
+        run: uv run --locked python src/examples/helloworld.py
