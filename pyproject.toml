@@ -18,5 +18,11 @@ dependencies = [
 [project.urls]
 Repository = "https://github.com/ICR-Computational-Imaging/example_actions"
 
+[dependency-groups]
+dev = ["pytest>=8"]
+
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

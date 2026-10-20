@@ -44,9 +44,23 @@ This table will grow as new examples are added. Filenames below refer to files i
 | --- | --- |
 | `helloworld.yaml` | Checks out the repository, sets up Python 3.12, and runs Python using an inline command, multiple shell commands, and a script file. Runs on branch pushes, pull requests targeting `main` or `dev`, or a manual trigger. |
 | `helloworld_uv.yaml` | Uses uv to set up Python 3.12, install the project and its dependencies with `uv sync --locked`, and run the example script with `uv run`. Uses the same triggers as `helloworld.yaml`. |
+| `test.yaml` | Installs the project and pytest with uv, then tests the hello-world output and time formatting. A failing test makes the workflow fail. Uses the same triggers as `helloworld.yaml`. |
 | `secret.yaml` | Manual teaching example that prints a dummy secret to demonstrate GitHub's log masking. **Use a dummy value only; real secrets must never be printed or shared.** See setup below. |
 
 The uv example installs the dependencies declared in `pyproject.toml` at the versions recorded in `uv.lock`. After changing dependencies, run `uv lock` locally and commit both files before running the workflow.
+
+## Running the unit tests
+
+Run the hello-world tests locally with uv:
+
+```bash
+uv sync --locked --group dev
+uv run --locked --group dev python -m pytest -v
+```
+
+The tests in `tests/test_helloworld.py` check time formatting and the ten numbered output lines using simple assertions. Pytest's `capsys` fixture collects the printed output so it can be checked. The tests run the real script, including its pauses, so they take about five seconds. Pytest is declared in the `dev` dependency group in `pyproject.toml`.
+
+The same commands run in `.github/workflows/test.yaml`, which is enabled in this repository. The template is also available as `example_workflows/test.yaml` for the lecture exercises. Commit and push the tests, workflow, `pyproject.toml`, and updated `uv.lock` together.
 
 ## Secrets
 
