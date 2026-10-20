@@ -8,7 +8,7 @@ on:  # When should the action be run?
   pull_request: 
     branches: [main, dev]        # PRs targeting main or dev (if available) only
   workflow_dispatch:             # Manually run against a selected branch or tag
-
+                                 # (only from default branch; main in this case)   
 permissions:
   contents: read  # The workflow can only read the repository, not write to it
 

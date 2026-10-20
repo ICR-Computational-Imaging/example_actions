@@ -1,4 +1,4 @@
-# example_actions
+# Example GitHub Actions
 
 Example GitHub Actions workflows for use in a lecture series. More examples will be added over time.
 
@@ -33,6 +33,8 @@ Example GitHub Actions workflows for use in a lecture series. More examples will
    ```
 
    Open the **Actions** tab in your fork to view workflow runs. If GitHub prompts you to enable Actions for the fork, enable them, then push another commit or use **Run workflow** for examples that support manual runs.
+
+   **Manual runs:** The workflow file must exist in `.github/workflows/` on your repository's default branch (usually `main`) with `workflow_dispatch` enabled before **Run workflow** is available. Once it does, you can select another branch, such as `dev`, from the **Branch** dropdown to run that branch's version. The workflow on the selected branch must also have `workflow_dispatch` enabled.
 
 ## Example workflows
 
