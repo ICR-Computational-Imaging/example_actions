@@ -13,18 +13,21 @@ Example GitHub Actions workflows for use in a lecture series. More examples will
    cd example_actions
    ```
 
-3. Move one or more example YAML files from `example_workflows/` into `.github/workflows/` to enable them. For example:
+3. Copy one or more example YAML files from `example_workflows/` into `.github/workflows/` to enable them. For example:
 
    ```bash
    mkdir -p .github/workflows
-   git mv example_workflows/helloworld.yaml .github/workflows/
+   cp example_workflows/helloworld.yaml .github/workflows/
    ```
 
-   Repeat the `git mv` command for any other examples you want to try. Only workflows in `.github/workflows/` are picked up by GitHub Actions.
+   Repeat the `cp` command for any other examples you want to try. Only workflows in `.github/workflows/` are picked up by GitHub Actions.
+
+   Some examples may already be enabled in `.github/workflows/`. Copying an identical file won't create a change to commit; you can instead view existing runs or use **Run workflow** in the Actions tab for examples that support manual runs.
 
 4. Commit your changes and push them back to your fork on GitHub:
 
    ```bash
+   git add .github/workflows
    git commit -m "Enable example workflows"
    git push origin HEAD
    ```
@@ -33,7 +36,7 @@ Example GitHub Actions workflows for use in a lecture series. More examples will
 
 ## Example workflows
 
-This table will grow as new examples are added. Filenames below refer to files in `example_workflows/` before you move them.
+This table will grow as new examples are added. Filenames below refer to files in `example_workflows/` before you copy them.
 
 | Workflow | What it demonstrates |
 | --- | --- |
