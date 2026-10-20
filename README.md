@@ -44,6 +44,7 @@ This table will grow as new examples are added. Filenames below refer to files i
 | --- | --- |
 | `helloworld.yaml` | Checks out the repository, sets up Python 3.12, and runs Python using an inline command, multiple shell commands, and a script file. Runs on branch pushes, pull requests targeting `main` or `dev`, or a manual trigger. |
 | `helloworld_uv.yaml` | Uses uv to set up Python 3.12, install the project and its dependencies with `uv sync --locked`, and run the example script with `uv run`. Uses the same triggers as `helloworld.yaml`. |
+| `caching.yaml` | Saves and restores uv's dependency cache between runs, reports cache hits, and runs the unit tests. Runs on branch pushes, PRs targeting `main` or `dev`, or manually. |
 | `test.yaml` | Installs the project and pytest with uv, then tests the hello-world output and time formatting. A failing test makes the workflow fail. Uses the same triggers as `helloworld.yaml`. |
 | `lint.yaml` | Uses Ruff to check Python files for common mistakes, such as unused imports. Runs on branch pushes, PRs targeting `main` or `dev`, or manually. |
 | `matrix.yaml` | Runs the unit tests in separate jobs for Python 3.12 and 3.13. Runs on branch pushes, PRs targeting `main` or `dev`, or manually. |
@@ -74,6 +75,7 @@ Copy `example_workflows/test.yaml` into `.github/workflows/` to run the same com
 
 Enable each example by copying it into `.github/workflows/` using the steps above.
 
+- **Caching:** Enable `caching.yaml` and run **Cached Python dependencies** twice on the same branch without changing `uv.lock` or `pyproject.toml`. After the first successful run saves a cache, the second should report `Cache restored: true` in its log and summary. This caches downloaded packages and built wheels; `uv sync` still creates the environment on each runner. Changing either dependency file creates a new cache key. This teaching example keeps downloaded wheels with `prune-cache: false`; for normal CI, setup-uv's default pruning can reduce cache size. Cache availability and timings can vary, so a hit does not guarantee a faster run. See [uv caching in GitHub Actions](https://docs.astral.sh/uv/guides/integration/github/#caching).
 - **Linting:** Run `uv run --locked --group dev ruff check src tests` locally. For a lecture demonstration, add an unused import to a Python file and see the check fail; remove it to make the check pass again.
 - **Matrix:** Open the workflow run to see a separate test job for each Python version. Edit `strategy.matrix.python-version` to change the versions tested; each version must satisfy the project's Python requirement.
 - **Artifacts:** Open a completed **Downloadable report** run and download `hello-world-report` from its **Artifacts** section. It contains `hello-world.txt` and is retained for seven days.

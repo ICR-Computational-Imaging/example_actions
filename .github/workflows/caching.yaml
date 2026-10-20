@@ -1,0 +1,51 @@
+# Keep uv's dependency cache between runs to avoid downloading packages again.
+name: Cached Python dependencies
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main, dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up uv, Python, and caching
+        id: setup-uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+          # Changing either file creates a new cache key.
+          cache-dependency-glob: |
+            uv.lock
+            pyproject.toml
+          # Give this lecture example its own cache.
+          cache-suffix: lecture-caching-v1
+          # Keep downloaded wheels so their reuse is visible in this example.
+          prune-cache: false
+
+      - name: Show whether the cache was restored
+        env:
+          CACHE_HIT: ${{ steps.setup-uv.outputs.cache-hit }}
+        run: |
+          echo "Cache restored: $CACHE_HIT"
+          echo "## Dependency cache" >> "$GITHUB_STEP_SUMMARY"
+          echo "Cache restored: $CACHE_HIT" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Install project and test dependencies
+        # Always sync, even on a cache hit: the cache is not an installed .venv.
+        run: uv sync --locked --group dev
+
+      - name: Run unit tests
+        run: uv run --locked --group dev python -m pytest -v
+
+      # setup-uv automatically saves the cache after a successful job.
