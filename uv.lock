@@ -111,7 +111,7 @@ wheels = [
 
 [[package]]
 name = "example-actions"
-version = "1.0.0.dev1"
+version = "1.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "matplotlib" },
