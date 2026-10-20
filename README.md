@@ -48,6 +48,7 @@ This table will grow as new examples are added. Filenames below refer to files i
 | `lint.yaml` | Uses Ruff to check Python files for common mistakes, such as unused imports. Runs on branch pushes, PRs targeting `main` or `dev`, or manually. |
 | `matrix.yaml` | Runs the unit tests in separate jobs for Python 3.12 and 3.13. Runs on branch pushes, PRs targeting `main` or `dev`, or manually. |
 | `artifact.yaml` | Saves the hello-world output to a text report and uploads it for download. Runs on branch pushes or manually. |
+| `matplotlib.yaml` | Runs `src/examples/plot.py` without a graphical display, saves `plot.png`, and uploads it as a downloadable artifact. Runs on branch pushes or manually. |
 | `inputs.yaml` | Adds a greeting field and a repetition dropdown to the manual **Run workflow** form. |
 | `dependent_jobs.yaml` | Uses `needs` to run a report job only after the unit tests pass. Runs on branch pushes, PRs targeting `main` or `dev`, or manually. |
 | `conditions.yaml` | Uses `if` to select steps based on the branch or trigger event. Runs on branch pushes, PRs targeting `main` or `dev`, or manually. |
@@ -76,6 +77,7 @@ Enable each example by copying it into `.github/workflows/` using the steps abov
 - **Linting:** Run `uv run --locked --group dev ruff check src tests` locally. For a lecture demonstration, add an unused import to a Python file and see the check fail; remove it to make the check pass again.
 - **Matrix:** Open the workflow run to see a separate test job for each Python version. Edit `strategy.matrix.python-version` to change the versions tested; each version must satisfy the project's Python requirement.
 - **Artifacts:** Open a completed **Downloadable report** run and download `hello-world-report` from its **Artifacts** section. It contains `hello-world.txt` and is retained for seven days.
+- **Matplotlib:** Enable `matplotlib.yaml`, then download `example-plot` from the completed run's **Artifacts** section to view `plot.png`. The workflow sets `MPLBACKEND=Agg` and the script uses `savefig()` to save an image. To try it locally, run `uv run --locked python src/examples/plot.py`; the image is saved in your current directory.
 - **Inputs:** Open **Manual inputs → Run workflow**, enter a greeting, and choose how many times to print it.
 - **Dependent jobs:** The report job waits for the test job. If a test fails, the report job is skipped. When tests pass, the run's summary page shows the success report.
 - **Conditions:** Compare a branch push, a PR, and a manual run to see which steps run or are skipped. The main-branch step checks the branch name `main`; change it if your default branch has another name.
