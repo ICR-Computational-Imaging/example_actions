@@ -35,5 +35,6 @@ jobs:
         with:
           name: example-plot
           path: plot.png
+          archive: false
           if-no-files-found: error
           retention-days: 7
