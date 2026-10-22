@@ -1,32 +1,32 @@
-[build-system]
-requires = ["setuptools>=77"]
-build-backend = "setuptools.build_meta"
+[build-system]  # Build configuration
+requires = ["setuptools>=77"]  # Build dependency
+build-backend = "setuptools.build_meta"  # Build backend
 
-[project]
-name = "example-actions"
-version = "1.1.2.dev0"
-description = "Example GitHub Actions workflows for a lecture series."
-readme = "README.md"
-requires-python = ">=3.12"
-license = "Apache-2.0"
-license-files = ["LICENSE"]
-dependencies = [
-    "matplotlib>=3.11.2",
-    "numpy>=2.5.4",
+[project]  # Package metadata
+name = "example-actions"  # Package name
+version = "1.1.2.dev0"  # Development version
+description = "Example GitHub Actions workflows for a lecture series."  # Package summary
+readme = "README.md"  # Long description
+requires-python = ">=3.12"  # Minimum Python version
+license = "Apache-2.0"  # License identifier
+license-files = ["LICENSE"]  # Bundled license file
+dependencies = [  # Runtime dependencies
+    "matplotlib>=3.11.2",  # Plotting
+    "numpy>=2.5.4",  # Numerical arrays
 ]
 
-[project.urls]
-Repository = "https://github.com/ICR-Computational-Imaging/example_actions"
+[project.urls]  # Project links
+Repository = "https://github.com/ICR-Computational-Imaging/example_actions"  # Source repository
 
-[dependency-groups]
-dev = [
-    "bump2version>=1.0.1",
-    "pytest>=8",
-    "ruff>=0.14",
+[dependency-groups]  # Optional dependency groups
+dev = [  # Development tools
+    "bump2version>=1.0.1",  # Version updates
+    "pytest>=8",  # Test runner
+    "ruff>=0.14",  # Linter and formatter
 ]
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[tool.setuptools.packages.find]  # Package discovery
+where = ["src"]  # Package source directory
 
-[tool.pytest.ini_options]
-testpaths = ["tests"]
+[tool.pytest.ini_options]  # Pytest settings
+testpaths = ["tests"]  # Test directory
